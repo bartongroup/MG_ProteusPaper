@@ -98,7 +98,7 @@ exploration and visualisation. Differential expression is done with
 \emph{limma}, offering more robust treatment of data gaps than random
 imputation. Availability and implementation: The open-source R package
 is available to install from GitHub
-(\url{https://github.com/bartongroup/Proteus}).
+(\url{https://github.com/bartongroup/proteus}).
 \end{abstract}
 
 \section{Introduction}\label{introduction}
@@ -144,6 +144,8 @@ The ability to aggregate peptide and protein data according to any
 prescription gives the package flexibility. On the other hand, the
 default, predefined aggregation functions make the package very easy to
 use. The full analysis can be done in just a few lines of R code.
+Alternatively, \emph{MaxQuant's} protein groups file can be read
+directly into \emph{Proteus}.
 
 \begin{figure}[H]
 
@@ -215,9 +217,9 @@ differential expression, which is done by a t-test in \emph{Perseus} and
 
 \subsection{Simple data set}\label{simple-data-set}
 
-First we focused on the differential expression offered by both packages
-using the same protein data set. We used a subset of a large data set
-from Gierlinski et al. (in preparation). The set was prepared in
+First we compared differential expression offered by both packages using
+the same protein data set. We used a subset of a large data set from
+Gierlinski et al. (in preparation). The set was prepared in
 \emph{Proteus}. We read the evidence file and filtered out reverse
 sequences and contaminants. Then, we created peptide table based on the
 tree randomly selected replicates in each condition (samples 1083-7,
@@ -237,8 +239,8 @@ Missing data were filled with random imputation, using the default
 parameters, width = 0.3 and down shift = 1.8. Then, we performed
 two-sample t-test. In \emph{Proteus} data were log-2-transformed and
 differential expression was performed by \emph{limma}. Since the protein
-intensities were the same, we compare the difference between imputation
-plus t-test versus \emph{limma} (without imputation).
+intensities were the same, we compare the difference between t-test with
+imputation versus \emph{limma} without imputation.
 
 \begin{figure}[H]
 
@@ -262,13 +264,13 @@ These proteins have missing data and rather large intensity. Imputation
 in \emph{Perseus} filled the gaps with low intensities, inflating
 variance and missing what otherwise would be differentially expressed.
 An example of such protein is shown in Figure
-\ref{fig:protein_examples}A. Another group of blue circles in Figure
-\ref{fig:perseus_limma}C indicates that the permutation FDR method used
-in \emph{Perseus} is slightly more conservative that that in
-\emph{limma}. All these proteins have adjusted p-values near the limit
-0.05. An example of such protein is shown in Figure
-\ref{fig:protein_examples}B. The proteins plotted as green triangles
-(see Figure \ref{fig:perseus_limma} C and D) are marked as
+\ref{fig:protein_examples}A. Another group of \emph{limma}-only blue
+circles in Figure \ref{fig:perseus_limma}C indicates that the
+permutation FDR method used in \emph{Perseus} is slightly more
+conservative that that in \emph{limma}. All these proteins have adjusted
+p-values near the limit 0.05. An example of such protein is shown in
+Figure \ref{fig:protein_examples}B. The proteins plotted as green
+triangles (see Figure \ref{fig:perseus_limma} C and D) are marked as
 differentially expressed by \emph{Perseus} but not \emph{limma}. They
 typically have small variance and small fold change. They are called
 significant by a simple t-test but no by \emph{limma}, which moderates
@@ -289,21 +291,21 @@ a fold-change limit in t-test.
 The imputation in \emph{Perseus} is designed to fill missing
 low-intensity data with a randomly generated Gaussian numbers (see
 supplemental figure 3 in Tyanova et al. (2016)). However, on some
-occasions data from a replicate can be missing even for high-intensity
-data. In such cases variance is dramatically inflated and the protein is
-not called as differentially expressed. We warn against using data
-imputation. \emph{limma} offers a better approach to missing data, by
-modelling mean-intensity variance and using moderated variance for the
-test. Certainly, the imputation step can be omitted in \emph{Perseus},
-but this reduces power and makes analysis of data with only one
-replicate impossible in one condition. Again, \emph{limma} can estimate
-variance and make a decision about differential expression even in such
-extreme cases (at an increased risk of a false positive).
+occasions a datum can be missing even at high intensities. In such cases
+variance is dramatically inflated and the protein is not called as
+differentially expressed. We warn against using data imputation.
+\emph{limma} offers a better approach to missing data, by modelling
+mean-intensity variance and using moderated variance for the test.
+Certainly, the imputation step can be omitted in \emph{Perseus}, but
+this reduces power and rejects data with only one replicate available in
+a condition. Again, \emph{limma} can estimate variance and make a
+decision about differential expression even in such extreme cases (at an
+increased risk of a false positive).
 
 \subsection{Simulated data}\label{simulated-data}
 
 Next, we compared performance of differential expression in both tools
-using simulated data. We generate the simulated set based on real data.
+using simulated data. We generated a simulated set based on real data.
 Since we have a good data set of two conditions in 35 replicates each
 (Gierlinski at al. in preparation), we used it to find the mean-variance
 relationship and the rate of missing values as a function of the
@@ -311,13 +313,13 @@ intensity.
 
 Figure \ref{fig:full_data_stats}A shows the relation between the
 logarithm of the variance and logarithm of the mean calculated across
-all 35 replicates (data from both conditions overlapped). It is well
+all 35 replicates (data from both conditions aggregated). It is well
 approximated by a straight line. Figure \ref{fig:full_data_stats}B shows
 the distribution of the number of ``good'' replicates as a function of
 the logarithm of the mean intensity. The good replicates are those with
 signal detection, as opposed to missing data. We see that in our data
 set all measurements with \(\log_2\) mean below \textasciitilde{}19
-contain only one good replicate.
+contain only one good replicate (out of 35!).
 
 \begin{figure}[H]
 
@@ -329,29 +331,29 @@ contain only one good replicate.
 \end{figure}
 
 We used this information to create a simulated data set. We generated
-data in two conditions in three replicates each and allow for missing
+data in two conditions in three replicates each and allowed for missing
 data in each condition. We chose 7 values of \(\log_2 M\) (mean) between
 17 and 29 and 15 values of \(\log_2 FC\) (fold change) between 0 and
 2.8. For each combination of \(\log_2 M\) and \(\log_2 FC\) we generated
 two random samples of up to 3 data points from the log-normal
 distribution with the given mean and variance estimated from the linear
-function found from real data. The first sample has the mean \(M\), the
-second sample has the mean \(M * FC\). For each sample the number of
-good replicates is generated based on data in Figure
-\ref{fig:full_data_stats}B. First, for the given \(M\), we use the
+function found from real data. The first sample had the mean \(M\), the
+second sample had the mean \(M * FC\). For each sample the number of
+good replicates was generated based on data in Figure
+\ref{fig:full_data_stats}B. First, for the given \(M\), we used the
 cumulative distribution of the number of good replicates to generate a
-number between 1 and 35. This is then sub-sampled to the 3 replicates
-generated (for example, if 10 is generated in the first step, we create
-a vector of 10 good and 25 bad replicates and draw a random sample of
-3). Since we are not interested in samples with no data, we enforce at
-least one good replicate in each sample. This means that data with only
-one good replicate will be over-represented for very low intensities.
-This is not an issue as our aim is to assess tool performance at each
-intensity level and low intensities will invariably contain a lot of
-missing data. For each combination of \(\log_2 M\) and \(\log_2 FC\) we
-generated 1000 samples in two conditions, using this technique. This
-gives us a large set of 105,500 ``proteins'' covering a wide range of
-intensities and fold changes.
+number between 1 and 35. This was then sub-sampled to the 3 replicates
+generated (for example, if 10 was generated in the first step, we
+created a vector of 10 good and 25 bad replicates and drew a random
+sample of 3). Since we are not interested in samples with no data, we
+enforced at least one good replicate in each sample. This means that
+data with only one good replicate will be over-represented for very low
+intensities. This is not an issue as our aim is to assess tool
+performance at each intensity level and low intensities will invariably
+contain a lot of missing data. For each combination of \(\log_2 M\) and
+\(\log_2 FC\) we generated 1000 samples in two conditions, using this
+technique. This gave us a large set of 105,500 ``proteins'' covering a
+wide range of intensities and fold changes.
 
 \begin{figure}[H]
 
@@ -362,20 +364,20 @@ intensities and fold changes.
 \caption{\label{fig:simulation_rates}Results for the full set of simulated data with 3 replicates. Top panels show limma, bottom panles show Perseus results. A and C show the proportion of tests called as signficant as a function of the simulated fold change (FC) and mean (M). B and D show the false discovery rate, that is the proportion of tests for simulated log FC = 0 called as significant.}\label{fig:plot_sim_limma}
 \end{figure}
 
-Then, we performed the differential expression on the simulated data
-using \emph{Perseus} and \emph{limma}. In \emph{Perseus} we imported
+Then, we performed differential expression on the simulated data using
+\emph{Perseus} and \emph{Proteus}. In \emph{Perseus} we imported
 simulated data from a file, log2-transformed, applied default imputation
-and used a two-sample t-test. In \emph{limma} log2-transformed data were
-used directly. The results are shown in Figure
-\ref{fig:simulation_rates}. Panels A and C show the proportion of
-proteins called significant in a group of 1000 proteins for each
-combination of fold change and mean intensity. We can see that
-\emph{limma} performs well across all intensities, discovering almost
-all positives for the highest \(\log_2 FC = 2.8\) used here. In
-contrast, the sensitivity of \emph{Perseus} drops dramatically at low
-intensities. Even at medium intensities of \(\log_2 M = 19\) only about
-half of the changing proteins are discovered at large fold changes of
-\(\log_2 FC = 2\). See also Figure
+and used a two-sample t-test. In \emph{Proteus} we log2-transformed the
+data and used \emph{limma} for differential expression. The results are
+shown in Figure \ref{fig:simulation_rates}. Panels A and C show the
+proportion of proteins called significant in a group of 1000 proteins
+for each combination of fold change and mean intensity. We can see that
+\emph{limma} (in \emph{Proteus}) performs well across all intensities,
+discovering almost all positives for the highest \(\log_2 FC = 2.8\)
+used here. In contrast, the sensitivity of \emph{Perseus} drops
+dramatically at low intensities. Even at medium intensities of
+\(\log_2 M = 19\) only about half of the changing proteins are
+discovered at large fold changes of \(\log_2 FC = 2\). See also Figure
 \ref{fig:significant_proportion_comparison}A.
 
 The main reason for this behaviour is imputation of missing replicates.
@@ -386,8 +388,8 @@ one, imputation is necessary and the result is randomized. On the other
 hand, \emph{limma} borrows information across the entire set and builds
 a reliable model of variance which works for any sample size. As we can
 see from the bottom curve in Figure \ref{fig:simulation_rates}A
-(corresponding to \(\log_2 M = 17\)) \emph{limma} performs really well
-even in tests of one versus one replicate.
+(corresponding to \(\log_2 M = 17\)) \emph{limma} performs well even in
+tests of one versus one replicate.
 
 The price to pay for increased sensitivity of \emph{limma} is the
 increased false discovery rate (FDR). We can estimate FDR as a
@@ -407,19 +409,20 @@ assumed limit of 0.05 at the three lowest intensities. In contrast,
 \end{figure}
 
 Because imputation is clearly an issue we decided to compare
-\emph{limma} and \emph{Perseus} using data that do not require
+\emph{Proteus} and \emph{Perseus} using data that do not require
 imputation. We used the same simulated data set, but filtered out all
 proteins with only one good replicate in either condition. Filtering
 low-replicate data would reflect a more realistic workflow for a
 researcher who doesn't want to apply imputation. After filtering we
-processed data in \emph{Perseus} and \emph{limma} as before, but skipped
-the imputation step in \emph{Perseus}. Results are shown in Figure
-\ref{fig:simulation_filt_rates}. Not surprisingly, the significant
-proportion of \emph{limma} and \emph{Perseus} are now more similar,
-though \emph{limma} still offers slight advantage (see also Figure
-\ref{fig:significant_proportion_comparison}B). The false discovery rate
-is now better in \emph{limma} than in \emph{Perseus} where 4 out of 5
-intensity groups result in \(FDR \sim 0.1\).
+processed data in \emph{Perseus} and \emph{Proteus} as before, but
+skipped the imputation step in \emph{Perseus}. Results are shown in
+Figure \ref{fig:simulation_filt_rates}. Not surprisingly, the
+significant proportion of \emph{limma} and \emph{Perseus} are now more
+similar, though \emph{limma} still offers slight advantage (see also
+Figure \ref{fig:significant_proportion_comparison}B). The false
+discovery rate is now better controlled by \emph{limma} than by
+\emph{Perseus} where 4 out of 5 intensity groups result in
+\(FDR \sim 0.1\).
 
 \begin{figure}[H]
 
@@ -427,7 +430,7 @@ intensity groups result in \(FDR \sim 0.1\).
 
 }
 
-\caption{\label{fig:significant_proportion_comparison}Direct comparison of significance curves from Figs. \ref{fig:simulation_rates} (A) and \ref{fig:simulation_filt_rates} (B) for *Perseus* (dahsed curves) and *limma* (solid curves).}\label{fig:compare_significance_23}
+\caption{\label{fig:significant_proportion_comparison}Direct comparison of significance curves from Figs. \ref{fig:simulation_rates} (A) and \ref{fig:simulation_filt_rates} (B) for Perseus (dahsed curves) and limma (solid curves).}\label{fig:compare_significance_23}
 \end{figure}
 
 \section{Conclusions}\label{conclusions}
