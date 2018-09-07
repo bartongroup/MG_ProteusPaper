@@ -29,6 +29,8 @@
             pdfborder={0 0 0},
             breaklinks=true}
 \urlstyle{same}  % don't use monospace font for urls
+\usepackage{natbib}
+\bibliographystyle{achemso}
 \usepackage{graphicx,grffile}
 \makeatletter
 \def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
@@ -97,7 +99,7 @@
 tools for peptide and protein aggregation, quality checks, data
 exploration and visualisation, including interactive analysis utilising
 \emph{Shiny} framework. \emph{Proteus} performs differential expression
-with \emph{limma}, offering a robust treatment of data gaps, with no
+with \emph{limma}, offering a robust treatment of missing data, with no
 need for (random) imputation. Availability and implementation: The
 open-source R package is available to install from GitHub
 (\url{https://github.com/bartongroup/proteus}).
@@ -106,47 +108,47 @@ open-source R package is available to install from GitHub
 \section{Introduction}\label{introduction}
 
 \emph{MaxQuant} is one of the most popular tools for analyzing mass
-spectrometry (MS) quantitative proteomics data (J. Cox and Mann 2008).
-The output of a \emph{MaxQuant} run usually consists of several tables,
+spectrometry (MS) quantitative proteomics data \citep{coxmann2008}. The
+output of a \emph{MaxQuant} run usually consists of several tables,
 including the evidence data and summarized peptide and protein
 intensities. The downstream analysis and understanding of these data are
 essential for interpreting peptide and protein quantification. The
-standalone \emph{Perseus} software package (Tyanova et al. 2016) is
-often used in conjunction with \emph{MaxQuant}.
+standalone \emph{Perseus} software package \citep{tyanova2016} is often
+used in conjunction with \emph{MaxQuant}.
 
 \emph{Proteus} offers the simple but comprehensive downstream analysis
-of \emph{MaxQuant} output in the R environment (R Core Team 2018). The
+of \emph{MaxQuant} output in the R environment \citep{R2018}. The
 package is built with simplicity and flexibility of analysis in mind. A
 user unfamiliar with R can obtain differential expression results with a
 few lines code following the tutorial, while a more experienced R
 programmer can perform advanced analysis using the plethora of R and
-Bioconductor packages (Huber et al. 2015).
+Bioconductor packages \citep{bioconductor2015}.
 
 Differential expression is a commonly used term for statistical
 comparison of numerical results from two or more biological conditions.
 For high-throughput experiments differential expression must take into
 account statistical model of data distribution, wide range of variance,
-data gaps and multiple test corrections. A number of tools have been
+missing data and multiple test corrections. A number of tools have been
 developed to cope with these challanges, in particular in the field of
-RNA-seq (Gierliński et al. 2015, Schurch et al. (2016)). One of these
-tools is a Bioconductor package \emph{limma} (Ritchie et al. 2015),
-originally developed for microarrays, but often used with RNA-seq data.
-The core feature of \emph{limma} making it ideal for MS experiments is
-its ability to make analyses stable even for data with frequent
-gaps---this is achieved by borrowing information across features (that
-is transcript/genes in RNA-seq and peptides/proteins in MS).
-\emph{Proteus} uses \emph{limma} to perform stable and robust
+RNA-seq \citep{gierlinski2015, schurch2016}. One of these tools is a
+Bioconductor package \emph{limma} \citep{ritchie2015}, originally
+developed for microarrays, but often used with RNA-seq data. The core
+feature of \emph{limma} making it ideal for MS experiments is its
+ability to make analyses stable even for data with high proportion of
+missing values---this is achieved by borrowing information across
+features (that is transcript/genes in RNA-seq and peptides/proteins in
+MS). \emph{Proteus} uses \emph{limma} to perform stable and robust
 differential expression of data with gaps, thus avoiding random
 imputation.
 
-\section{Methods}\label{methods}
+\section{Data analysis in Proteus}\label{data-analysis-in-proteus}
 
 \emph{Proteus} analysis begins with reading the evidence file. To
 conserve memory only essential columns are retained. Reverse sequences
 and contaminants are rejected by default. In the current version
-label-free, tandem mass tags (TMT) (Thompson et al. 2003) and stable
-isotope labeling by amino acids in cell culture (SILAC) (Ong et al.
-2002) data can be used.
+label-free, tandem mass tags (TMT) \citep{thompson2003} and stable
+isotope labeling by amino acids in cell culture (SILAC) \citep{ong2002}
+data can be used.
 
 Peptide measurements (intensities or SILAC ratios) are aggregated from
 individual peptide entries with the same sequence or modified sequence.
@@ -156,7 +158,7 @@ aggregation can be provided.
 
 Protein intensities for label-free and TMT data are aggregated, by
 default, using the high-flyer method, where protein intensity is the
-mean of the three top-intensity peptides (Silva et al. 2006). For SILAC
+mean of the three top-intensity peptides \citep{silva2006}. For SILAC
 experiments, the median ratio is calculated. Alternatively, the sum of
 intensities or a user-provided function can be applied. The ability to
 aggregate peptide and protein data according to any prescription gives
@@ -188,19 +190,18 @@ fold-change/intensity plot (Fig. \ref{fig:visualisation}C). The package
 provides functions to fetch protein annotations from UniProt servers.
 
 Package \emph{limma} was chosen for differential expression due to its
-stability against gaps in data, common in MS experiments. \emph{limma}
-offers an advantage over random imputation methods by borrowing
-information across peptides or proteins and using the mean-variance
-relationship to estimate variance where data are missing. The results
-can be visualised as a volcano plot (Fig. \ref{fig:visualisation}D) or
-as an intensity plot for individual peptide or protein (Fig.
-\ref{fig:visualisation}E).
+stability against missing data, common in label-free MS experiments
+\citep{lazar2016}. \emph{limma} offers an advantage over random
+imputation methods by borrowing information across peptides or proteins
+and using the mean-variance relationship to estimate variance where data
+are missing. The results can be visualised as a volcano plot (Fig.
+\ref{fig:visualisation}D) or as an intensity plot for individual peptide
+or protein (Fig. \ref{fig:visualisation}E).
 
 \emph{Proteus} offers a pointy-clicky data explorer based on the
-\emph{Shiny} web application framework (Chang et al. 2018). It allows to
-study properties of individual proteins in the context of the
-interactive volcano or fold-change-intensity plot (Fig.
-\ref{fig:shiny}).
+\emph{Shiny} web application framework \citep{shiny}. It allows to study
+properties of individual proteins in the context of the interactive
+volcano or fold-change-intensity plot (Fig. \ref{fig:shiny}).
 
 \begin{figure}[H]
 
@@ -211,7 +212,48 @@ interactive volcano or fold-change-intensity plot (Fig.
 \caption{\label{fig:shiny}A screenshot of the interactive data explorer in Proteus, using the Shiny framework. It shows a volcano plot with a selected protein marked in red, protein annotation, intensity plot, detailed intensity table and p-value from the differential expression test. At the bottom there is a row selected from the full table of proteins by a search.}\label{fig:fig_shiny}
 \end{figure}
 
-\section{Results}\label{results}
+\subsection{Minimal example}\label{minimal-example}
+
+A basic data processing flow in \emph{Proteus} is a follows: read the
+evidence data and metadata, aggregate peptides and proteins, normalize
+protein data, perform differential expression and explore the results.
+Assuming that R variables \texttt{evidenceFile} and
+\texttt{metadataFile} point to \emph{MaxQuant's} evidence file and a
+small text file describing the design of the experiment (that is how
+samples and conditions relate to evidence data) the minimal R code to
+process these data is:
+
+\begin{verbatim}
+# read evidence data
+evidence <- readEvidenceFile(evidenceFile)
+
+# read metadata
+metadata <- read.delim(metadataFile, header=TRUE, sep="\t")
+
+# aggregate peptides
+peptides <- makePeptideTable(evidence, metadata)
+
+# aggregate proteins
+proteins <- makeProteinTable(peptides)
+
+# normalize protein intensities
+proteins <- normalizeData(proteins)
+
+# differential expression
+res <- limmaDE(proteins)
+
+# interactive data expolorer
+plotVolcano_live(proteins, res)
+\end{verbatim}
+
+Here we used default parameters in all steps, but each function has
+several parameters allowing the full control over, e.g., the way
+peptides and proteins are aggregated or normalized. \emph{Proteus} comes
+with a set of tutorials (R vignettes) using real data examples to
+illustrate every step of data processing. Each function in the package
+is accompanied with detailed documentation and examples.
+
+\section{Proteus vs Perseus}\label{proteus-vs-perseus}
 
 Here we compare performance of \emph{Proteus} (version 0.2.6) to
 \emph{Perseus} (version 1.6.1.3), a commonly used \emph{MaxQuant} data
@@ -242,14 +284,14 @@ resulting intensity table containing 3338 proteins in two conditions in
 three replicates each was processed in \emph{Perseus} and
 \emph{Proteus}.
 
-In \emph{Perseus} we \(\log_2\)-transformed these data and filled gaps
-with random imputation, using the default parameters, width = 0.3 and
-down shift = 1.8. Then, we performed a two-sample \(t\)-test and
-exported the results as a generic table. In \emph{Proteus} we
-\(\log_2\)-transformed data and performed differential expression using
-\emph{limma}. Since the protein intensities were the same, we compared
-the difference between \(t\)-test with imputation versus \emph{limma}
-without imputation.
+In \emph{Perseus} we \(\log_2\)-transformed these data and filled
+missing values with random imputation, using the default parameters,
+width = 0.3 and down shift = 1.8. Then, we performed a two-sample
+\(t\)-test and exported the results as a generic table. In
+\emph{Proteus} we \(\log_2\)-transformed data and performed differential
+expression using \emph{limma}. Since the protein intensities were the
+same, we compared the difference between \(t\)-test with imputation
+versus \emph{limma} without imputation.
 
 \begin{figure}[H]
 
@@ -268,9 +310,9 @@ methods, 15 only by \emph{Perseus} and 45 only by \emph{limma} (in
 group of proteins called by \emph{limma} only where \emph{Perseus}
 reported large p-values (6 blue circles at the bottom of the plot).
 These proteins have missing data and rather large intensity. Imputation
-in \emph{Perseus} filled the gaps with low intensities, inflating
-variance and missing what otherwise would be differentially expressed.
-An example of such a protein is shown in Figure
+in \emph{Perseus} filled the missing values with low intensities,
+inflating variance and missing what otherwise would be differentially
+expressed. An example of such a protein is shown in Figure
 \ref{fig:protein_examples}A. Another group of \emph{limma}-only blue
 circles in Figure \ref{fig:perseus_limma}C indicates that the
 permutation FDR method used in \emph{Perseus} is slightly more
@@ -297,7 +339,7 @@ a fold-change limit in a \(t\)-test.
 
 The imputation in \emph{Perseus} is designed to fill missing
 low-intensity data with a randomly generated Gaussian numbers (see
-supplemental figure 3 in Tyanova et al. (2016)). However, on some
+supplemental figure 3 in \citet{tyanova2016}). However, on some
 occasions a datum can be missing even at high intensities. In such cases
 variance is dramatically inflated and the protein is not called as
 differentially expressed. We warn against using data imputation.
@@ -442,90 +484,36 @@ discovery rate is now better controlled by \emph{limma} than by
 
 \section{Conclusions}\label{conclusions}
 
-\emph{Proteus} allows easy and flexible analysis of \emph{MaxQuant}
-output in R environment. It uses a powerful package \emph{limma} for
-differential analysis. It offers an alternative to a popular package
-\emph{Perseus} for researchers willing to use R.
+R is becoming one of the most widely used tools for data science and
+statistical computing, in particular in academia
+\citep{tippmann2014, muenchen2017}. Its strenght is built on the wealth
+of statistical libraries available. \emph{Proteus} adds to a rapidly
+growing suite of bioinformatics packages in R. It not only performs
+specific tasks related to processing of \emph{MaxQuant} output, but
+opens peptide and protein data to further analysis and visualisation. It
+offers an alternative to a popular package \emph{Perseus} for
+researchers willing to use R.
 
-\section*{References}\label{references}
-\addcontentsline{toc}{section}{References}
+R is a scripting language and when data and code are published together,
+it makes data processing fully reproducible. Any analysis performed in
+\emph{Proteus} can be replicated by any researcher, including all
+intermediate steps, simply by running the original code again. We
+recommend using the \emph{RStudio} environment \citep{rstudio}, where
+the code can be executed step-by-step and each R object can be easily
+scrutinised. R is a cross-platform project and can be used on most
+operating systems. Needless to say, \emph{Proteus} is fully open source.
 
-\hypertarget{refs}{}
-\hypertarget{ref-shiny}{}
-Chang, Winston, Joe Cheng, JJ Allaire, Yihui Xie, and Jonathan
-McPherson. 2018. \emph{Shiny: Web Application Framework for R}.
-\url{https://CRAN.R-project.org/package=shiny}.
+\emph{Proteus} uses a powerful package \emph{limma} for differential
+expression analysis, allowing for stable analysis of data with missing
+values, common in label-free MS proteomics, with no need for random
+imputation. Instead, \emph{limma} borrows information between
+peptides/proteins to build a robust model of variance and performs
+differential expression tests based on this model. We demostrate that
+this offers a clear advantage in terms of sensitivity over a \(t\)-test
+combined with random imputation.
 
-\hypertarget{ref-coxmann2008}{}
-Cox, Jürgen, and Matthias Mann. 2008. ``MaxQuant Enables High Peptide
-Identification Rates, Individualized P.p.b.-Range Mass Accuracies and
-Proteome-Wide Protein Quantification.'' \emph{Nature Biotechnology} 26
-(12): 1367--72.
-doi:\href{https://doi.org/10.1038/nbt.1511}{10.1038/nbt.1511}.
-
-\hypertarget{ref-gierlinski2015}{}
-Gierliński, Marek, Christian Cole, Pietà Schofield, Nicholas J. Schurch,
-Alexander Sherstnev, Vijender Singh, Nicola Wrobel, et al. 2015.
-``Statistical Models for RNA-Seq Data Derived from a Two-Condition
-48-Replicate Experiment.'' \emph{Bioinformatics} 31 (22). Oxford
-University Press (OUP): 3625--30.
-doi:\href{https://doi.org/10.1093/bioinformatics/btv425}{10.1093/bioinformatics/btv425}.
-
-\hypertarget{ref-bioconductor2015}{}
-Huber, W., Carey, V. J., Gentleman, R., Anders, et al. 2015.
-``Orchestrating High-Throughput Genomic Analysis with Bioconductor.''
-\emph{Nature Methods} 12 (2): 115--21.
-\url{http://www.nature.com/nmeth/journal/v12/n2/full/nmeth.3252.html}.
-
-\hypertarget{ref-ong2002}{}
-Ong, Shao-En, Blagoy Blagoev, Irina Kratchmarova, Dan Bach Kristensen,
-Hanno Steen, Akhilesh Pandey, and Matthias Mann. 2002. ``Stable Isotope
-Labeling by Amino Acids in Cell Culture, SILAC, as a Simple and Accurate
-Approach to Expression Proteomics.'' \emph{Molecular \& Cellular
-Proteomics} 1 (5). American Society for Biochemistry \& Molecular
-Biology (ASBMB): 376--86.
-doi:\href{https://doi.org/10.1074/mcp.m200025-mcp200}{10.1074/mcp.m200025-mcp200}.
-
-\hypertarget{ref-R2018}{}
-R Core Team. 2018. \emph{R: A Language and Environment for Statistical
-Computing}. Vienna, Austria: R Foundation for Statistical Computing.
-\url{http://www.R-project.org/}.
-
-\hypertarget{ref-ritchie2015}{}
-Ritchie, Matthew E., Belinda Phipson, Di Wu, Yifang Hu, Charity W. Law,
-Wei Shi, and Gordon K. Smyth. 2015. ``Limma Powers Differential
-Expression Analyses for RNA-Sequencing and Microarray Studies.''
-\emph{Nucleic Acids Research} 43 (7). Oxford University Press (OUP):
-e47--e47.
-doi:\href{https://doi.org/10.1093/nar/gkv007}{10.1093/nar/gkv007}.
-
-\hypertarget{ref-schurch2016}{}
-Schurch, Nicholas J., Pietá Schofield, Marek Gierliński, Christian Cole,
-Alexander Sherstnev, Vijender Singh, Nicola Wrobel, et al. 2016. ``How
-Many Biological Replicates Are Needed in an RNA-Seq Experiment and Which
-Differential Expression Tool Should You Use?'' \emph{RNA} 22 (6). Cold
-Spring Harbor Laboratory: 839--51.
-doi:\href{https://doi.org/10.1261/rna.053959.115}{10.1261/rna.053959.115}.
-
-\hypertarget{ref-silva2006}{}
-Silva, J. C., M. V. Gorenstein, G. Z. Li, J. P. Vissers, and S. J.
-Geromanos. 2006. ``Absolute quantification of proteins by LCMSE: a
-virtue of parallel MS acquisition.'' \emph{Mol. Cell Proteomics} 5 (1):
-144--56.
-
-\hypertarget{ref-thompson2003}{}
-Thompson, Andrew, Jürgen Schäfer, Karsten Kuhn, Stefan Kienle, Josef
-Schwarz, Günter Schmidt, Thomas Neumann, and Christian Hamon. 2003.
-``Tandem Mass Tags:~ a Novel Quantification Strategy for Comparative
-Analysis of Complex Protein Mixtures by MS/MS.'' \emph{Analytical
-Chemistry} 75 (8). American Chemical Society (ACS): 1895--1904.
-doi:\href{https://doi.org/10.1021/ac0262560}{10.1021/ac0262560}.
-
-\hypertarget{ref-tyanova2016}{}
-Tyanova, Stefka, Tikira Temu, Pavel Sinitcyn, Arthur Carlson, Marco Y
-Hein, Tamar Geiger, Matthias Mann, and Jürgen Cox. 2016. ``The Perseus
-Computational Platform for Comprehensive Analysis of (Prote) Omics
-Data.'' \emph{Nature Methods}. Nature Research.
+\renewcommand\refname{References}
+\bibliography{proteus.bib}
 
 
 \end{document}
