@@ -173,7 +173,7 @@ can be read directly into \emph{Proteus}.
 
 }
 
-\caption{\label{fig:visualisation}Visualization in Proteus using example data from Trunk et al. (2018) in two biological conditions (1112 and BMO) and seven replicates each. These are actual plots created by Proteus. A. Peptide count per sample. B. Clustering of samples at protein level. C. Fold-change versus intensity for protein data. D. Volcano plot following differential expression analysis for protein data. E. Log-intensities of replicates in two conditions for a selected protein. The protein identifier, as extracted from evidence data, is shown at the top.}\label{fig:fig_visualisation}
+\caption{\label{fig:visualisation}Visualization in Proteus using example data in two biological conditions (named 1112 and BMO) and seven replicates each. This figure shows the actual plots created by Proteus. A. Peptide count per sample. B. Clustering of samples at protein level. C. Fold-change versus intensity for protein data. D. Volcano plot following differential expression analysis for protein data. E. Log-intensities of replicates in two conditions for a selected protein. The protein identifier, as extracted from evidence data, is shown at the top.}\label{fig:fig_visualisation}
 \end{figure}
 
 Peptide or protein data are encapsulated in an R object together with
@@ -182,13 +182,14 @@ summary statistics as mean, variance and number of good replicates per
 peptide/protein. Either object can be used for further processing, that
 is, analysis can be done on peptide or protein level, using the same
 functions. Fig. \ref{fig:visualisation} illustrates a few aspects of
-data visualisation in \emph{Proteus}, using an example data set from
-\citep{trunk2018}. These include peptide/protein count (Fig.
-\ref{fig:visualisation}A), sample comparison, correlation and clustering
-(Fig. \ref{fig:visualisation}B). Measurements can be normalized between
-samples using any arbitrary function, e.g., to the median or quantiles.
-A pair of conditions can be compared in a fold-change/intensity plot
-(Fig. \ref{fig:visualisation}C). The package provides functions to fetch
+data analysis and visualisation in \emph{Proteus}, using an example data
+set (see \emph{Proteus} vignette for details). These include
+peptide/protein count (Fig. \ref{fig:visualisation}A), sample
+comparison, correlation and clustering (Fig. \ref{fig:visualisation}B).
+Measurements can be normalized between samples using any arbitrary
+function, e.g., to the median or quantiles. A pair of conditions can be
+compared in a fold-change/intensity plot (Fig.
+\ref{fig:visualisation}C). The package provides functions to fetch
 protein annotations from UniProt servers.
 
 Package \emph{limma} was chosen for differential expression due to its
@@ -211,7 +212,7 @@ volcano or fold-change-intensity plot (Fig. \ref{fig:shiny}).
 
 }
 
-\caption{\label{fig:shiny}A screenshot of the interactive data explorer in Proteus, using the Shiny framework. It shows a volcano plot with a selected protein marked in red, protein annotation, intensity plot, detailed intensity table and p-value from the differential expression test. At the bottom there is a row selected from the full table of proteins by a search.}\label{fig:fig_shiny}
+\caption{\label{fig:shiny}A screenshot of the interactive data explorer in Proteus, using the Shiny framework. It shows an interactive volcano plot with a selected protein marked in red. The user can select proteins from the plot by hovering the mouse over a dot representing one protein. To the right, there are protein annotation, intensity plot, detailed intensity table and a p-value from the differential expression test. At the bottom there is a row selected from the full table of proteins by typing the protein ID in the search box.}\label{fig:fig_shiny}
 \end{figure}
 
 \subsection{Minimal example}\label{minimal-example}
@@ -336,7 +337,7 @@ a fold-change limit in a \(t\)-test.
 
 }
 
-\caption{\label{fig:protein_examples}Selected examples of proteins called as significant by one tool only. A. Called by limma only. Imputation in Perseus inflated variance creating a false negative. B. Called by limma only. Perseus FDR is more conservative than that in limma at the same limit of 0.05. C. Called by Perseus only. An example of very low variance, which is moderated and called negative by limma. Data imputed by Perseus are marked with open circles.}\label{fig:protein_examples}
+\caption{\label{fig:protein_examples}Selected examples of proteins called as significant by one tool only. UniProt identifiers are shown on top of each panel. A. Called by limma only. Imputation in Perseus inflated variance creating a false negative. B. Called by limma only. Perseus FDR is more conservative than that in limma at the same limit of 0.05. C. Called by Perseus only. An example of very low variance, which is moderated and called negative by limma. Data imputed by Perseus are marked with open circles.}\label{fig:protein_examples}
 \end{figure}
 
 The imputation in \emph{Perseus} is designed to fill missing
@@ -512,7 +513,8 @@ imputation. Instead, \emph{limma} borrows information between
 peptides/proteins to build a robust model of variance and performs
 differential expression tests based on this model. We demostrate that
 this offers a clear advantage in terms of sensitivity over a \(t\)-test
-combined with random imputation.
+combined with random imputation. This makes \emph{Proteus} particularly
+useful for label-free data with a small number of replicates.
 
 \renewcommand\refname{References}
 \bibliography{proteus.bib}
