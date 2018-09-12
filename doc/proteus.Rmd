@@ -4,7 +4,7 @@ author:
 - Marek Gierlinski^[Data Analysis Group, Division of Computational Biology, School of Life Sciences, University of Dundee, Dundee, UK]
 - Francesco Gastaldello^[Biological Chemistry and Drug Discovery, University of Dundee, Dundee, UK]
 - Geoffrey J. Barton^[Division of Computational Biology, School of Life Sciences, University of Dundee, Dundee, UK]
-abstract: "*Proteus* is a package for downstream analysis of *MaxQuant* evidence data in R environment. It provides a variety of tools for peptide and protein aggregation, quality checks, data exploration and visualisation, including interactive analysis utilising *Shiny* framework. *Proteus* performs differential expression with *limma*, offering a robust treatment of missing data, with no need for (random) imputation. Availability and implementation: The open-source R package is available to install from GitHub (https://github.com/bartongroup/proteus)."
+abstract: "*Proteus* is a package for downstream analysis of *MaxQuant* evidence data in the R environment. It provides a variety of tools for peptide and protein aggregation, quality checks, data exploration and visualisation, including interactive analysis in *Shiny* framework. *Proteus* performs differential expression with a well-established tool *limma*, offering a robust treatment of missing data, frequently encountered in label-free mass-spectrometry experiments. This results in better sensitivity than random imputation combined with a t-test, implemented in a popular package *Perseus*, as we demonstrate on real and simulated data. Embedding *Proteus* in R offers access to a wide selection of statistical and graphical tools for further analysis. Availability and implementation: The open-source R package, including example data set and tutorials, is available to install from GitHub (https://github.com/bartongroup/proteus)."
 output:
   pdf_document:
     fig_caption: yes
@@ -48,11 +48,11 @@ options(width = 80)
 
 # Introduction
 
-*MaxQuant* is one of the most popular tools for analyzing mass spectrometry (MS) quantitative proteomics data [@coxmann2008]. The output of a *MaxQuant* run usually consists of several tables, including the evidence data and summarized peptide and protein intensities. The downstream analysis and understanding of these data are essential for interpreting peptide and protein quantification. The standalone *Perseus* software package [@tyanova2016] is often used in conjunction with *MaxQuant*.
+*MaxQuant* is one of the most popular tools for analyzing mass spectrometry (MS) quantitative proteomics data [@coxmann2008]. The output of a *MaxQuant* run usually consists of several tables, including the evidence data and summarized peptide and protein intensities. The downstream analysis and understanding of these data are essential for interpreting peptide and protein quantification. The standalone *Perseus* software package [@tyanova2016] is often used in conjunction with *MaxQuant* to help this interpretation.
 
-*Proteus* offers the simple but comprehensive downstream analysis of *MaxQuant* output in the R environment [@R2018]. The package is built with simplicity and flexibility of analysis in mind. A user unfamiliar with R can obtain differential expression results with a few lines code following the tutorial, while a more experienced R programmer can perform advanced analysis using the plethora of R and Bioconductor packages [@bioconductor2015].
+The *Proteus* package described here offers simple but comprehensive downstream analysis of *MaxQuant* output in the R environment [@R2018]. The package is built with simplicity and flexibility of analysis in mind. A user unfamiliar with R can obtain differential expression results with a few lines code following the tutorial, while a more experienced R programmer can perform advanced analysis using the plethora of R and Bioconductor packages [@bioconductor2015].
 
-Differential expression is a commonly used term for statistical comparison of numerical results from two or more biological conditions. For high-throughput experiments differential expression must take into account a statistical model of data distribution, wide range of variance, missing data and multiple test corrections. A number of tools have been developed to cope with these challanges, in particular in the field of RNA-seq [@gierlinski2015; @schurch2016]. One of these tools is a Bioconductor package *limma* [@ritchie2015], originally developed for microarrays, but often used with RNA-seq data. The core feature of *limma* making it ideal for MS experiments is its ability to make analyses stable even for data with high proportion of missing values---this is achieved by borrowing information across features (that is transcript/genes in RNA-seq and peptides/proteins in MS). *Proteus* uses *limma* to perform stable and robust differential expression of data with gaps, thus avoiding random imputation.
+Differential expression is a commonly used term for statistical comparison of numerical results from two or more biological conditions. For high-throughput experiments differential expression must take into account a statistical model of data distribution, wide range of variance, missing data and multiple test corrections. A number of tools have been developed to cope with these challanges, in particular in the field of RNA-seq [@gierlinski2015; @schurch2016]. One of these tools is a well-established Bioconductor package *limma* [@ritchie2015], originally developed for microarrays [e.g. @peart2005], but often used with RNA-seq data [see @schurch2016 for comparison with other tools]. The core feature of *limma* making it ideal for MS experiments is its ability to make analyses stable even for data with high proportion of missing values---this is achieved by borrowing information across features (that is transcript/genes in RNA-seq and peptides/proteins in MS). *Proteus* uses *limma* to perform stable and robust differential expression of data with gaps, thus avoiding the need for random imputation.
  
 # Data analysis in Proteus
 
@@ -78,32 +78,32 @@ fig <- list(
 ```
 
 
-*Proteus* analysis begins with reading the evidence file. To conserve memory only essential columns are retained. Reverse sequences and contaminants are rejected by default. In the current version label-free, tandem mass tags (TMT) [@thompson2003] and  stable isotope labeling by amino acids in cell culture (SILAC) [@ong2002] data can be used.
+*Proteus* analysis begins with reading the evidence file. To conserve memory only essential columns are retained. Reverse sequences and contaminants are rejected by default. In the current version, label-free, tandem mass tags (TMT) [@thompson2003] and  stable isotope labeling by amino acids in cell culture (SILAC) [@ong2002] data are supported.
 
 Peptide measurements (intensities or SILAC ratios) are aggregated from individual peptide entries with the same sequence or modified sequence. Quantification is carried out as the sum (label-free or TMT) or median (SILAC) of individual measurements.  A user-defined function for peptide aggregation can be provided.
 
-Protein intensities for label-free and TMT data are aggregated, by default, using the high-flyer method, where protein intensity is the mean of the three top-intensity peptides [@silva2006]. For SILAC experiments, the median ratio is calculated. Alternatively, the sum of intensities or a user-provided function can be applied. The ability to aggregate peptide and protein data according to any prescription gives the package flexibility. On the other hand, the default, predefined aggregation functions make the package very easy to use. Instead of performing in-package aggregation, *MaxQuant's* protein groups file can be read directly into *Proteus*.
+Protein intensities for label-free and TMT data are aggregated, by default, using the high-flyer method, where protein intensity is the mean of the three top-intensity peptides [@silva2006]. For SILAC experiments, the median ratio is calculated. Alternatively, the sum of intensities or a user-provided function can be applied. The ability to aggregate peptide and protein data according to any prescription gives the package flexibility. On the other hand, the default, predefined aggregation functions make the package very easy to use. As an alternative to performing in-package aggregation, *MaxQuant's* protein groups file can also be read directly into *Proteus*.
 
-```{r fig_visualisation, fig.width=5, fig.height=4, fig.cap="\\label{fig:visualisation}Visualization in Proteus using example data in two biological conditions (named A and B) and seven replicates each. This figure shows the actual plots created by Proteus. A. Peptide count per sample. B. Clustering of samples at protein level, a 'bad' replicate B-7 was removed. C. Fold-change versus intensity for protein data. D. Volcano plot following differential expression analysis for protein data. E. Log-intensities of replicates in two conditions for a selected protein. The protein identifier, as extracted from evidence data, is shown at the top."}
+```{r fig_visualisation, fig.width=5, fig.height=4, fig.cap="\\label{fig:visualisation}Visualization in Proteus using example data in two biological conditions (named A and B) and seven replicates each. This figure shows the actual plots created by Proteus. A. Peptide count per sample. B. Clustering of samples at protein level, a 'bad' replicate B-7 was removed. C. Fold-change versus intensity for protein data. D. Volcano plot following differential expression analysis for protein data. E. Log-intensities of replicates (marked by different colours) in two conditions for a selected protein. The protein identifier, as extracted from evidence data, is shown at the top."}
 top_row <- plot_grid(fig$count, fig$clust, nrow=1, align="h", labels=c("A", "B"))
 bottom_row <- plot_grid(fig$fid, fig$volcano, fig$prot, nrow=1, labels=c("C", "D", "E"))
 plot_grid(top_row, bottom_row, nrow=2)
 ```
 
-Peptide or protein data are encapsulated in an R object together with essential information about the experiment design, processing steps and summary statistics as mean, variance and number of good replicates per peptide/protein. Either object can be used for further processing, that is, analysis can be done on peptide or protein level, using the same functions. Fig. \ref{fig:visualisation} illustrates a few aspects of data analysis and visualisation in *Proteus*, using an example data set (see *Proteus* vignette for details). These include peptide/protein count (Fig. \ref{fig:visualisation}A), sample comparison, correlation and clustering (Fig. \ref{fig:visualisation}B). Measurements can be normalized between samples using any arbitrary function, e.g., to the median or quantiles. A pair of conditions can be compared in a fold-change/intensity plot (Fig. \ref{fig:visualisation}C). The package provides functions to fetch protein annotations from UniProt servers.
+Peptide or protein data are encapsulated in an R object together with essential information about the experiment design, processing steps and summary statistics as mean, variance and number of good replicates per peptide/protein. Either object can be used for further processing, that is, analysis can be done on the peptide or protein level, using the same functions. Fig. \ref{fig:visualisation} illustrates a few aspects of data analysis and visualisation in *Proteus*, using an example data set (see vignette/tutorial included in the package for details). These include peptide/protein count (Fig. \ref{fig:visualisation}A), sample comparison, correlation and clustering (Fig. \ref{fig:visualisation}B). Measurements can be normalized between samples using any arbitrary function, e.g., to the median or quantiles. A pair of conditions can be compared in a fold-change/intensity plot (Fig. \ref{fig:visualisation}C). The package provides functions to fetch protein annotations from UniProt servers.
 
 Package *limma* was chosen for differential expression due to its stability against missing data, common in label-free MS experiments [@lazar2016]. *limma* offers an advantage over random imputation methods by borrowing information across peptides or proteins and using the mean-variance relationship to estimate variance where data are missing. The results can be visualised as a volcano plot (Fig. \ref{fig:visualisation}D) or as an intensity plot for individual peptide or protein (Fig. \ref{fig:visualisation}E).
 
-*Proteus* offers a pointy-clicky data explorer based on the *Shiny* web application framework [@shiny]. It allows to study properties of individual proteins in the context of the interactive volcano or fold-change-intensity plot (Fig. \ref{fig:shiny}).
+*Proteus* offers a pointy-clicky data explorer based on the *Shiny* web application framework [@shiny]. It allows the properties of individual proteins to be studied in the context of the interactive volcano or fold-change-intensity plot (Fig. \ref{fig:shiny}).
 
 
-```{r fig_shiny, fig.width=5, fig.height=4, fig.cap="\\label{fig:shiny}A screenshot of the interactive data explorer in Proteus, using the Shiny framework. It shows an interactive volcano plot with a selected protein marked in red. The user can select proteins from the plot by hovering the mouse over a dot representing one protein. To the right, there are protein annotation, intensity plot, detailed intensity table and a p-value from the differential expression test. At the bottom there is a row selected from the full table of proteins by typing the protein ID in the search box."}
-knitr::include_graphics("../volcano_live_screenshot.png") 
+```{r fig_shiny, fig.width=5, fig.height=4, fig.cap="\\label{fig:shiny}A screenshot of the interactive data explorer in Proteus, which is implemented in the Shiny framework. It shows an interactive volcano plot with a selected protein marked in red. The user can select proteins from the plot by hovering the mouse over a dot representing one protein. To the right, there are protein annotation, intensity plot, detailed intensity table and a p-value from the differential expression test. At the bottom there is a row selected from the full table of proteins by typing the protein ID in the search box."}
+knitr::include_graphics("../volcano_live_screenshot.png")
 ```
 
 ## Minimal example
 
-A basic data processing flow in *Proteus* is a follows: read the evidence data and metadata, aggregate peptides and proteins, normalize protein data, perform differential expression and explore the results. Assuming that R variables `evidenceFile` and `metadataFile` point to *MaxQuant's* evidence file and a small text file describing the design of the experiment (that is how samples and conditions relate to evidence data) the minimal R code to process these data is:
+A basic data processing flow in *Proteus* is as follows: read the evidence data and metadata, aggregate peptides and proteins, normalize protein data, perform differential expression and explore the results. Assuming that R variables `evidenceFile` and `metadataFile` point to *MaxQuant's* evidence file and a small text file describing the design of the experiment (that is how samples and conditions relate to evidence data) the minimal R code to process these data is:
 
 ```
 # read evidence data
@@ -128,14 +128,13 @@ res <- limmaDE(proteins)
 plotVolcano_live(proteins, res)
 ```
 
-Here we used default parameters in all steps, but each function has several parameters allowing the full control over, e.g., the way peptides and proteins are aggregated or normalized. *Proteus* comes with a set of tutorials (R vignettes) using real data examples to illustrate every step of data processing. Each function in the package is accompanied with detailed documentation and examples.
+Here default parameters were applied in all steps, but each function has several parameters allowing full control over, e.g., the way peptides and proteins are aggregated or normalized. *Proteus* comes with a set of tutorials (R vignettes) using real data examples to illustrate every step of data processing. Each function in the package is accompanied with detailed documentation and examples.
 
 # Proteus vs Perseus
 
 Here we compare performance of *Proteus* (version 0.2.8) to *Perseus* (version 1.6.1.3), a commonly used *MaxQuant* data analysis tool with a graphical user interface, available for MS Windows, on two examples. First, we analyse a label-free proteomics data set in two conditions and three replicates each. Second, we create a simulated data set based on a large real data set to investigate power and false positives from both tools. We focus on the performance of the differential expression, which is carried out by a t-test in *Perseus* and *limma* in *Proteus*.
 
 ## Simple data set
-
 
 ```{r dirs_and_files, cache=FALSE}
 # one dir up from the "doc" subdir
@@ -315,6 +314,14 @@ plotSignificanceBar <- function(res, names, limit=0.05, text.size=10, axis.size=
     labs(x="", y="Significant count")
 }
 
+plotVenn <- function(res) {
+  only.perseus <- res[res$sig.perseus.only, "protein"]
+  only.limma <- res[res$sig.limma.only, "protein"]
+  both <- res[res$sig.both, "protein"]
+  v <- venn.diagram(list(perseus=c(only.perseus, both), limma=c(only.limma, both)), filename=NULL)
+  grid.draw(v)
+}
+
 plotPerseusLimmaProtein <- function(res, seltab, protein, samples, meta, text.size=10, axis.size=10, jitter.width=0.2, ylim=c(16,32), ylab=expression(log[2]~intensity)) {
   int.limma <- as.numeric(seltab[protein,])
   int.perseus <- as.numeric(res[protein, samples])
@@ -339,7 +346,7 @@ plotPerseusLimmaProtein <- function(res, seltab, protein, samples, meta, text.si
   g
 }
 
-plotToolVolcano <- function(res, tool, symbol.size=0.5, mid.gradient=0.1, ylim=NULL) {
+plotToolVolcano <- function(res, tool, symbol.size=0.5, mid.gradient=0.1, ylim=NULL, with.el=FALSE) {
   if(tool == "perseus") {
     cols <- c("logFC.perseus", "P.Value.perseus")
   } else {
@@ -347,15 +354,23 @@ plotToolVolcano <- function(res, tool, symbol.size=0.5, mid.gradient=0.1, ylim=N
   }
   df <- res[, c(cols, "protein", "sig.limma.only", "sig.perseus.only", "sig.both")]
   names(df)[1:2] <- c("logFC", "P.Value")
+  dl <- df[which(df$sig.limma.only),]
   g <- ggplot(df, aes(logFC, -log10(P.Value))) +
     theme_classic() +
     theme(text = element_text(size=ts), axis.text = element_text(size=as)) +
     geom_point(size=0.6, na.rm=TRUE, color="lightgoldenrod2") + 
     geom_point(data=df[which(df$sig.both),], color="pink", fill="pink", size=symbol.size, shape=23) +
-    geom_point(data=df[which(df$sig.limma.only),], color="royalblue", fill="royalblue", size=symbol.size, shape=21) +
     geom_point(data=df[which(df$sig.perseus.only),], color="forestgreen", fill="forestgreen", size=symbol.size, shape=24) +
+    geom_point(data=dl, color="royalblue", fill="royalblue", size=symbol.size, shape=21) +
     labs(x = expression(log[2]~FC), y = expression(-log[10]~P), title=tool)
   if(!is.null(ylim)) g <- g + ylim(ylim)
+  if(with.el) {
+    g <- g + 
+      stat_ellipse(data=data.frame(x=c(-2,0,0,2), y=c(2.5,2.3,2.8,2.5)), aes(x,y), colour="grey70") +
+      stat_ellipse(data=data.frame(x=c(-1.1,0,0,1.3), y=c(0.55,0.37,0.72,0.55)), aes(x,y), colour="grey70") +
+      annotate("text", x=4.2, y=0.6, label="1", colour="grey50", size=3) + 
+      annotate("text", x=6.7, y=2.6, label="2", colour="grey50", size=3)
+  }
   g
 }
 
@@ -374,6 +389,7 @@ perseusProteusFigurePanels <- function(res) {
     theme(text = element_text(size=ts), axis.text = element_text(size=as)) +
     labs(x=expression(log[10]~P~limma), y=expression(log[10]~P~perseus))
   pl$sig <- plotSignificanceBar(res, c("limma", "perseus"), text.size=ts, axis.size=8)
+  #pl$sig <- plotVenn(res)
   pl$ma <- ggplot(res, aes(AveExpr.limma, logFC.limma)) +
     theme_classic() +
     theme(text = element_text(size=ts), axis.text = element_text(size=as)) +
@@ -381,15 +397,15 @@ perseusProteusFigurePanels <- function(res) {
     geom_point(data=res[which(res$sig.limma.only),], color="royalblue", fill="royalblue", size=0.5, shape=21) +
     geom_point(data=res[which(res$sig.perseus.only),], aes(AveExpr.limma, logFC.limma), color="forestgreen", fill="forestgreen", size=0.5, shape=23) +
     labs(x = 'Mean intensity', y = 'log FC')
-  pl$v1 <- plotToolVolcano(res, "perseus", symbol.size=1, ylim=c(0,6.5))
+  pl$v1 <- plotToolVolcano(res, "perseus", symbol.size=1, ylim=c(0,6.5), with.el=TRUE)
   pl$v2 <- plotToolVolcano(res, "proteus", symbol.size=1, ylim=c(0,6.5))
   pl
 }
 ```
 
-```{r fig_perseus_limma, fig.width=8, fig.height=2.5, fig.cap="\\label{fig:perseus_limma}Perseus vs limma for a selection of 3 vs 3 replicates. A. P-value (not adjusted) comparison. B. Number of significant proteins. C. Volcano plot using fold-change and p-values from Perseus. All data are in yellow background. The limma-significant-only proteins are as blue circles, the perseus-significant-only proteins are as green triangles. Proteins significant in both tools are as pink diamonds. D. Volcano plot using fold-change and p-values from Proteus. Symbols are the same as in C."}
+```{r fig_perseus_limma, fig.width=8, fig.height=2.5, fig.cap="\\label{fig:perseus_limma}Perseus vs limma for a selection of 3 vs 3 replicates. A. P-value (not adjusted) comparison. B. Number of significant proteins. C. Volcano plot using fold-change and p-values from Perseus. All data are in yellow background. The limma-significant-only proteins are as blue circles, the perseus-significant-only proteins are as green triangles. Proteins significant in both tools are as pink diamonds. The ellipses indicate data discussed in the text. D. Volcano plot using fold-change and p-values from Proteus. Symbols are the same as in C."}
 fig <- perseusProteusFigurePanels(res.nrep)
-plot_grid(fig$p, fig$sig, fig$v1, fig$v2, ncol=4, align="h", labels=c("A", "B", "C", "D")) 
+plot_grid(fig$p, fig$sig, fig$v1, fig$v2, ncol=4, align="h", labels=c("A", "B", "C", "D"))
 ```
 
 ```{r perseus_limma_only}
@@ -399,7 +415,7 @@ only.limma.outliers <- res.nrep[res.nrep$sig.limma.only & -log10(res.nrep$P.Valu
 both <- res.nrep[res.nrep$sig.both, "protein"] 
 ```
 
-Figure \ref{fig:perseus_limma} shows the comparison of p-values, significantly differentially expressed proteins and volcano plots for both approaches. There were `r length(both)` proteins called as significant by both methods, `r length(only.perseus)` only by *Perseus* and `r length(only.limma)` only by *limma* (in *Proteus*). We can see in Figure \ref{fig:perseus_limma}C a small group of proteins called by *limma* only where *Perseus* reported large p-values (6 blue circles at the bottom of the plot). These proteins have missing data and rather large intensity. Imputation in *Perseus* filled the missing values with low intensities, inflating variance and missing what otherwise would be differentially expressed. An example of such a protein is shown in Figure \ref{fig:protein_examples}A. Another group of *limma*-only blue circles in Figure \ref{fig:perseus_limma}C indicates that the permutation FDR method used in *Perseus* is slightly more conservative that that in *limma*. All these proteins have adjusted p-values near the limit 0.05.  An example of such protein is shown in Figure \ref{fig:protein_examples}B. The proteins plotted as green triangles (see Figure \ref{fig:perseus_limma} C and D) are marked as differentially expressed by *Perseus* but not *limma*. They typically have small variance and small fold change. They are called significant by a simple t-test but not by *limma*, which moderates variance and avoids cases of unusually small variability.  An example of such protein is shown in Figure \ref{fig:protein_examples}C. We note that these data can be easily eliminated from *Perseus* by setting a fold-change limit in a $t$-test.
+Figure \ref{fig:perseus_limma} shows the comparison of p-values, significantly differentially expressed proteins and volcano plots for both approaches. There were `r length(both)` proteins called as significant by both methods, `r length(only.perseus)` only by *Perseus* and `r length(only.limma)` only by *limma* (in *Proteus*), see Fig. \ref{fig:perseus_limma}B. We can see in Figure \ref{fig:perseus_limma}C a small group of proteins called by *limma* only where *Perseus* reported large p-values (6 blue circles at the bottom of the plot marked as "1"). These proteins have missing data and rather large intensity. Imputation in *Perseus* filled the missing values with low intensities, inflating variance and missing what otherwise would be differentially expressed. An example of such a protein is shown in Figure \ref{fig:protein_examples}A. The other group of *limma*-only blue circles in Figure \ref{fig:perseus_limma}C (marked as 2) indicates that the permutation FDR method used in *Perseus* is slightly more conservative that that in *limma*. All these proteins have adjusted p-values near the limit 0.05.  An example of such protein is shown in Figure \ref{fig:protein_examples}B. The proteins plotted as green triangles (see Figure \ref{fig:perseus_limma} C and D) are marked as differentially expressed by *Perseus* but not *limma*. They typically have small variance and small fold change. They are called significant by a simple t-test but not by *limma*, which moderates variance and avoids cases of unusually small variability.  An example of such protein is shown in Figure \ref{fig:protein_examples}C. We note that data with small fold changes can be easily removed from *Perseus* by setting a fold-change limit in a $t$-test.
 
 ```{r protein_examples, fig.width=4, fig.height=2, fig.cap="\\label{fig:protein_examples}Selected examples of proteins called as significant by one tool only. UniProt identifiers are shown on top of each panel. A. Called by limma only. Imputation in Perseus inflated variance creating a false negative. B. Called by limma only. Perseus FDR is more conservative than that in limma at the same limit of 0.05. C. Called by Perseus only. An example of very low variance, which is moderated and called negative by limma. Data imputed by Perseus are marked with open circles."}
 sel <- c(only.limma.outliers[1], only.limma[9], only.perseus[3])
@@ -413,8 +429,6 @@ plot_grid(P[[1]], P[[2]], P[[3]], ncol=3, align="h", labels=c("A", "B", "C"))
 The imputation in *Perseus* is designed to fill missing low-intensity data with a randomly generated Gaussian numbers (see supplemental figure 3 in @tyanova2016). However, on some occasions a datum can be missing even at high intensities. In such cases variance is dramatically inflated and the protein is not called as differentially expressed. We warn against using data imputation. *limma* offers a better approach to missing data, by modelling mean-intensity variance and using moderated variance for the test. Certainly, the imputation step can be omitted in *Perseus*, but this reduces power and rejects data with only one replicate available in a condition. Again, *limma* can estimate variance and make a decision about differential expression even in such extreme cases (at an increased risk of a false positive).
 
 ## Simulated data
-
-Next, we compared performance of differential expression in both tools using simulated data. We generated a simulated set based on real data. Since we have a good data set of two conditions in 35 replicates each (Gierlinski at al. in preparation), we used it to find the mean-variance relationship and the rate of missing values as a function of the intensity.
 
 ```{r big_set_stats, eval=FALSE}
 # These data will become available when the main paper is published
@@ -459,8 +473,6 @@ mbin.good$count[mbin.good$count == 0] <- NA
 ```
 
 
-Figure \ref{fig:full_data_stats}A shows the relation between the logarithm of the variance and logarithm of the mean calculated across all 35 replicates (data from both conditions aggregated). It is well approximated by a straight line. Figure \ref{fig:full_data_stats}B shows the distribution of the number of "good" replicates as a function of the logarithm of the mean intensity. The good replicates are those with signal detection, as opposed to missing data. We see that in our data set all measurements with $\log_2$ mean below ~19 contain only one good replicate (out of 35!).
-
 ```{r lfq_stats_plots, fig.width=5, fig.height=2, fig.cap="\\label{fig:full_data_stats}Properties of the full data set with 35 replicates in two conditions. A. Logarithm of the variance versus logarithm of the mean is very well approximated by a linear function. B. Number of good replicates as a function of the loarithm of the mean intensity (that is not missing data). Data from both conditions were aggregated."}
 g1 <- ggplot(prot.stats, aes(log2(mean), log2(variance))) +
     theme_classic() +
@@ -479,7 +491,7 @@ g2 <- ggplot(na.omit(mbin.good), aes((mean+mbin.size/2) / log10(2), ngood)) +
     #scale_fill_gradientn(colours=c("seagreen","yellow", "red"), values=c(0, 0.2, 1), name="count", na.value=NA) +
     scale_fill_viridis(values=c(0, 0.2, 1)) +
     labs(x=expression(log[2]~mean), y="No. good replicates") 
-plot_grid(g1, g2, ncol=2, align="h", labels=c("A", "B")) 
+#plot_grid(g1, g2, ncol=2, align="h", labels=c("A", "B")) 
 ```
 
 ```{r prepare_generator}
@@ -565,7 +577,7 @@ generateData <- function(nrep, n, cumsum.good, mv.coef, log2fc=seq(0, 2.8, 0.2),
 }
 ```
 
-We used this information to create a simulated data set. We generated data in two conditions in three replicates each and allowed for missing data in each condition.  We chose 7 values of $\log_2 M$ (mean) between 17 and 29 and 15 values of $\log_2 FC$ (fold change) between 0 and 2.8. For each combination of $\log_2 M$ and $\log_2 FC$ we generated two random samples of up to 3 data points from the log-normal distribution with the given mean and variance estimated from the linear function found from real data. The first sample had the mean $M$, the second sample had the mean $M * FC$. For each sample the number of good replicates was generated based on data in Figure \ref{fig:full_data_stats}B. First, for the given $M$, we used the cumulative distribution of the number of good replicates to generate a number between 1 and 35. This was then sub-sampled to the 3 replicates generated (for example, if 10 was generated in the first step, we created a vector of 10 good and 25 bad replicates and drew a random sample of 3). Since we are not interested in samples with no data, we enforced at least one good replicate in each sample. This means that data with only one good replicate will be over-represented for very low intensities. This is not an issue as our aim is to assess tool performance at each intensity level and low intensities will invariably contain a lot of missing data. For each combination of $\log_2 M$ and $\log_2 FC$ we generated 1000 samples in two conditions, using this technique. This gave us a large set of 105,500 "proteins" covering a wide range of intensities and fold changes.
+Next, we compared performance of differential expression in both tools using simulated data. We generated a simulated set based on real data. Since we have a good data set of two conditions in 35 replicates each (Gierlinski at al. in preparation), we used it to find the mean-variance relationship and the rate of missing values as a function of the intensity. We used this information to create a simulated data set in two conditions in three replicates each and allowed for missing data in each condition.  We chose a grid of $\log_2 M$ (mean) and $\log_2 FC$ (fold change) covering most of the original data. For each combination of $\log_2 M$ and $\log_2 FC$ we generated two random samples of up to 3 data points from the log-normal distribution with the given mean and variance estimated from the linear function found from real data. The first sample had the mean $M$, the second sample had the mean $M * FC$. For each sample the number of good replicates was generated to mimick the real data. First, for the given $M$, we used the cumulative distribution of the number of good replicates to generate a number between 1 and 35. This was then sub-sampled to the 3 replicates generated (for example, if 10 was generated in the first step, we created a vector of 10 good and 25 bad replicates and drew a random sample of 3). Since we are not interested in samples with no data, we enforced at least one good replicate in each sample. This means that data with only one good replicate will be over-represented for very low intensities. This is not an issue as our aim is to assess tool performance at each intensity level and low intensities will invariably contain a lot of missing data. For each combination of $\log_2 M$ and $\log_2 FC$ we generated 1000 samples in two conditions, using this technique. This gave us a large set of 105,500 "proteins" covering a wide range of intensities and fold changes.
 
 
 ```{r test_generate_data, eval=FALSE}
@@ -679,8 +691,8 @@ plotSimulationResults <- function(res, title) {
 ```
 
 
-```{r plot_sim_limma, fig.width=4, fig.height=3.5, fig.cap="\\label{fig:simulation_rates}Results for the full set of simulated data with 3 replicates. Top panels show limma, bottom panles show Perseus results. A and C show the proportion of tests called as signficant as a function of the simulated fold change (FC) and mean (M). B and D show the false discovery rate, that is the proportion of tests for simulated log FC = 0 called as significant."}
-p.lim <- plotSimulationResults(res.gdat.limma, "limma")
+```{r plot_sim_limma, fig.width=4, fig.height=3.5, fig.cap="\\label{fig:simulation_rates}Results for the full set of simulated data with 3 replicates. Top panels show limma, bottom panels show Perseus results. A and C show the proportion of tests called as signficant as a function of the simulated fold change (FC) and mean (M). B and D show the false discovery rate, that is the proportion of tests for simulated log FC = 0 called as significant."}
+p.lim <- plotSimulationResults(res.gdat.limma, "limma/proteus")
 p.per <- plotSimulationResults(res.gdat.perseus, "perseus")
 plot_grid(p.lim$g1, p.lim$g2, p.per$g1, p.per$g2, ncol=2, align="h", labels=c("A", "B", "C", "D"), rel_widths=c(1.4,1))
 ```
@@ -691,11 +703,11 @@ We performed differential expression on the simulated data using *Perseus* and *
 
 The main reason for this behaviour is imputation of missing replicates in *Perseus*. We notice that due to the way simulated data were generated, all proteins for the lowest intensity $\log_2 M = 17$ contain only one good replicate in each condition. As the $t$-test cannot deal with samples of one, imputation is necessary and the result is randomized. On the other hand, *limma* borrows information across the entire set and builds a reliable model of variance which works for any sample size. As we can see from the bottom curve in Figure \ref{fig:simulation_rates}A (corresponding to $\log_2 M = 17$) *limma* performs well even in tests of one versus one replicate.
 
-The price to pay for increased sensitivity of *limma* is the increased false discovery rate (FDR). We can estimate FDR as a proportion of proteins called significant at $\log_2 FC = 0$. Figure \ref{fig:simulation_rates}B shows that FDR for *limma* exceeds the assumed limit of 0.05 at the three lowest intensities. *Perseus* discovers far fewer positives at these intensities, which results in lower FDR (Figure \ref{fig:simulation_rates}D).
+The increased sensitivity of *limma* results in the increased false discovery rate (FDR). We can estimate FDR as a proportion of proteins called significant at $\log_2 FC = 0$. Figure \ref{fig:simulation_rates}B shows that FDR for *limma* exceeds the assumed limit of 0.05 at the three lowest intensities. *Perseus* discovers far fewer positives at these intensities, which results in lower FDR (Figure \ref{fig:simulation_rates}D).
 
 
 ```{r plot_sim_limma_n2, fig.width=4, fig.height=3.5, fig.cap="\\label{fig:simulation_filt_rates}Results for the filtered set of simulated data with 3 replicates. Only data with at least 2 replicates in each condition were used. Panels are the same as in Figure \\ref{fig:simulation_rates}."}
-p.lim <- plotSimulationResults(res.gdat2.limma, "limma")
+p.lim <- plotSimulationResults(res.gdat2.limma, "limma/proteus")
 p.per <- plotSimulationResults(res.gdat2.perseus, "perseus")
 plot_grid(p.lim$g1, p.lim$g2, p.per$g1, p.per$g2, ncol=2, align="h", labels=c("A", "B", "C", "D"), rel_widths=c(1.4,1))
 ```

@@ -95,14 +95,19 @@
 \maketitle
 \begin{abstract}
 \emph{Proteus} is a package for downstream analysis of \emph{MaxQuant}
-evidence data in R environment. It provides a variety of tools for
+evidence data in the R environment. It provides a variety of tools for
 peptide and protein aggregation, quality checks, data exploration and
-visualisation, including interactive analysis utilising \emph{Shiny}
-framework. \emph{Proteus} performs differential expression with
-\emph{limma}, offering a robust treatment of missing data, with no need
-for (random) imputation. Availability and implementation: The
-open-source R package is available to install from GitHub
-(\url{https://github.com/bartongroup/proteus}).
+visualisation, including interactive analysis in \emph{Shiny} framework.
+\emph{Proteus} performs differential expression with a well-established
+tool \emph{limma}, offering a robust treatment of missing data,
+frequently encountered in label-free mass-spectrometry experiments. This
+results in better sensitivity than random imputation combined with a
+t-test, implemented in a popular package \emph{Perseus}, as we
+demonstrate on real and simulated data. Embedding \emph{Proteus} in R
+offers access to a wide selection of statistical and graphical tools for
+further analysis. Availability and implementation: The open-source R
+package, including example data set and tutorias, is available to
+install from GitHub (\url{https://github.com/bartongroup/proteus}).
 \end{abstract}
 
 \section{Introduction}\label{introduction}
@@ -114,15 +119,16 @@ including the evidence data and summarized peptide and protein
 intensities. The downstream analysis and understanding of these data are
 essential for interpreting peptide and protein quantification. The
 standalone \emph{Perseus} software package \citep{tyanova2016} is often
-used in conjunction with \emph{MaxQuant}.
+used in conjunction with \emph{MaxQuant} to help this interpretation.
 
-\emph{Proteus} offers the simple but comprehensive downstream analysis
-of \emph{MaxQuant} output in the R environment \citep{R2018}. The
-package is built with simplicity and flexibility of analysis in mind. A
-user unfamiliar with R can obtain differential expression results with a
-few lines code following the tutorial, while a more experienced R
-programmer can perform advanced analysis using the plethora of R and
-Bioconductor packages \citep{bioconductor2015}.
+The \emph{Proteus} package described here offers simple but
+comprehensive downstream analysis of \emph{MaxQuant} output in the R
+environment \citep{R2018}. The package is built with simplicity and
+flexibility of analysis in mind. A user unfamiliar with R can obtain
+differential expression results with a few lines code following the
+tutorial, while a more experienced R programmer can perform advanced
+analysis using the plethora of R and Bioconductor packages
+\citep{bioconductor2015}.
 
 Differential expression is a commonly used term for statistical
 comparison of numerical results from two or more biological conditions.
@@ -131,24 +137,26 @@ account a statistical model of data distribution, wide range of
 variance, missing data and multiple test corrections. A number of tools
 have been developed to cope with these challanges, in particular in the
 field of RNA-seq \citep{gierlinski2015, schurch2016}. One of these tools
-is a Bioconductor package \emph{limma} \citep{ritchie2015}, originally
-developed for microarrays, but often used with RNA-seq data. The core
-feature of \emph{limma} making it ideal for MS experiments is its
-ability to make analyses stable even for data with high proportion of
-missing values---this is achieved by borrowing information across
-features (that is transcript/genes in RNA-seq and peptides/proteins in
-MS). \emph{Proteus} uses \emph{limma} to perform stable and robust
-differential expression of data with gaps, thus avoiding random
-imputation.
+is a well-established Bioconductor package \emph{limma}
+\citep{ritchie2015}, originally developed for microarrays
+\citep[e.g.][]{peart2005}, but often used with RNA-seq data \citep[see][
+for comparison with other tools]{schurch2016}. The core feature of
+\emph{limma} making it ideal for MS experiments is its ability to make
+analyses stable even for data with high proportion of missing
+values---this is achieved by borrowing information across features (that
+is transcript/genes in RNA-seq and peptides/proteins in MS).
+\emph{Proteus} uses \emph{limma} to perform stable and robust
+differential expression of data with gaps, thus avoiding the need for
+random imputation.
 
 \section{Data analysis in Proteus}\label{data-analysis-in-proteus}
 
 \emph{Proteus} analysis begins with reading the evidence file. To
 conserve memory only essential columns are retained. Reverse sequences
-and contaminants are rejected by default. In the current version
+and contaminants are rejected by default. In the current version,
 label-free, tandem mass tags (TMT) \citep{thompson2003} and stable
 isotope labeling by amino acids in cell culture (SILAC) \citep{ong2002}
-data can be used.
+data are supported.
 
 Peptide measurements (intensities or SILAC ratios) are aggregated from
 individual peptide entries with the same sequence or modified sequence.
@@ -163,9 +171,9 @@ experiments, the median ratio is calculated. Alternatively, the sum of
 intensities or a user-provided function can be applied. The ability to
 aggregate peptide and protein data according to any prescription gives
 the package flexibility. On the other hand, the default, predefined
-aggregation functions make the package very easy to use. Instead of
-performing in-package aggregation, \emph{MaxQuant's} protein groups file
-can be read directly into \emph{Proteus}.
+aggregation functions make the package very easy to use. As an
+alternative to performing in-package aggregation, \emph{MaxQuant's}
+protein groups file can also be read directly into \emph{Proteus}.
 
 \begin{figure}[H]
 
@@ -173,32 +181,23 @@ can be read directly into \emph{Proteus}.
 
 }
 
-\caption{\label{fig:visualisation}Visualization in Proteus using example data in two biological conditions (named A and B) and seven replicates each. This figure shows the actual plots created by Proteus. A. Peptide count per sample. B. Clustering of samples at protein level, a 'bad' replicate B-7 was removed. C. Fold-change versus intensity for protein data. D. Volcano plot following differential expression analysis for protein data. E. Log-intensities of replicates in two conditions for a selected protein. The protein identifier, as extracted from evidence data, is shown at the top.}\label{fig:fig_visualisation}
+\caption{\label{fig:visualisation}Visualization in Proteus using example data in two biological conditions (named A and B) and seven replicates each. This figure shows the actual plots created by Proteus. A. Peptide count per sample. B. Clustering of samples at protein level, a 'bad' replicate B-7 was removed. C. Fold-change versus intensity for protein data. D. Volcano plot following differential expression analysis for protein data. E. Log-intensities of replicates (marked by different colours) in two conditions for a selected protein. The protein identifier, as extracted from evidence data, is shown at the top.}\label{fig:fig_visualisation}
 \end{figure}
 
 Peptide or protein data are encapsulated in an R object together with
 essential information about the experiment design, processing steps and
 summary statistics as mean, variance and number of good replicates per
 peptide/protein. Either object can be used for further processing, that
-is, analysis can be done on peptide or protein level, using the same
+is, analysis can be done on the peptide or protein level, using the same
 functions. Fig. \ref{fig:visualisation} illustrates a few aspects of
 data analysis and visualisation in \emph{Proteus}, using an example data
-<<<<<<< HEAD
-set from \citep{trunk2018}. These include peptide/protein count (Fig.
-\ref{fig:visualisation}A), sample comparison, correlation and clustering
-(Fig. \ref{fig:visualisation}B). Measurements can be normalized between
-samples using any arbitrary function, e.g., to the median or quantiles.
-A pair of conditions can be compared in a fold-change/intensity plot
-(Fig. \ref{fig:visualisation}C). The package provides functions to fetch
-=======
-set (see \emph{Proteus} vignette for details). These include
-peptide/protein count (Fig. \ref{fig:visualisation}A), sample
+set (see vignette/tutorial included in the package for details). These
+include peptide/protein count (Fig. \ref{fig:visualisation}A), sample
 comparison, correlation and clustering (Fig. \ref{fig:visualisation}B).
 Measurements can be normalized between samples using any arbitrary
 function, e.g., to the median or quantiles. A pair of conditions can be
 compared in a fold-change/intensity plot (Fig.
 \ref{fig:visualisation}C). The package provides functions to fetch
->>>>>>> 85ffad905184f6b992fe3bf293ebf721c41d774b
 protein annotations from UniProt servers.
 
 Package \emph{limma} was chosen for differential expression due to its
@@ -211,9 +210,10 @@ are missing. The results can be visualised as a volcano plot (Fig.
 or protein (Fig. \ref{fig:visualisation}E).
 
 \emph{Proteus} offers a pointy-clicky data explorer based on the
-\emph{Shiny} web application framework \citep{shiny}. It allows to study
-properties of individual proteins in the context of the interactive
-volcano or fold-change-intensity plot (Fig. \ref{fig:shiny}).
+\emph{Shiny} web application framework \citep{shiny}. It allows the
+properties of individual proteins to be studied in the context of the
+interactive volcano or fold-change-intensity plot (Fig.
+\ref{fig:shiny}).
 
 \begin{figure}[H]
 
@@ -221,12 +221,12 @@ volcano or fold-change-intensity plot (Fig. \ref{fig:shiny}).
 
 }
 
-\caption{\label{fig:shiny}A screenshot of the interactive data explorer in Proteus, using the Shiny framework. It shows an interactive volcano plot with a selected protein marked in red. The user can select proteins from the plot by hovering the mouse over a dot representing one protein. To the right, there are protein annotation, intensity plot, detailed intensity table and a p-value from the differential expression test. At the bottom there is a row selected from the full table of proteins by typing the protein ID in the search box.}\label{fig:fig_shiny}
+\caption{\label{fig:shiny}A screenshot of the interactive data explorer in Proteus, which is implemented in the Shiny framework. It shows an interactive volcano plot with a selected protein marked in red. The user can select proteins from the plot by hovering the mouse over a dot representing one protein. To the right, there are protein annotation, intensity plot, detailed intensity table and a p-value from the differential expression test. At the bottom there is a row selected from the full table of proteins by typing the protein ID in the search box.}\label{fig:fig_shiny}
 \end{figure}
 
 \subsection{Minimal example}\label{minimal-example}
 
-A basic data processing flow in \emph{Proteus} is a follows: read the
+A basic data processing flow in \emph{Proteus} is as follows: read the
 evidence data and metadata, aggregate peptides and proteins, normalize
 protein data, perform differential expression and explore the results.
 Assuming that R variables \texttt{evidenceFile} and
@@ -258,12 +258,12 @@ res <- limmaDE(proteins)
 plotVolcano_live(proteins, res)
 \end{verbatim}
 
-Here we used default parameters in all steps, but each function has
-several parameters allowing the full control over, e.g., the way
-peptides and proteins are aggregated or normalized. \emph{Proteus} comes
-with a set of tutorials (R vignettes) using real data examples to
-illustrate every step of data processing. Each function in the package
-is accompanied with detailed documentation and examples.
+Here default parameters were applied in all steps, but each function has
+several parameters allowing full control over, e.g., the way peptides
+and proteins are aggregated or normalized. \emph{Proteus} comes with a
+set of tutorials (R vignettes) using real data examples to illustrate
+every step of data processing. Each function in the package is
+accompanied with detailed documentation and examples.
 
 \section{Proteus vs Perseus}\label{proteus-vs-perseus}
 
@@ -311,34 +311,35 @@ versus \emph{limma} without imputation.
 
 }
 
-\caption{\label{fig:perseus_limma}Perseus vs limma for a selection of 3 vs 3 replicates. A. P-value (not adjusted) comparison. B. Number of significant proteins. C. Volcano plot using fold-change and p-values from Perseus. All data are in yellow background. The limma-significant-only proteins are as blue circles, the perseus-significant-only proteins are as green triangles. Proteins significant in both tools are as pink diamonds. D. Volcano plot using fold-change and p-values from Proteus. Symbols are the same as in C.}\label{fig:fig_perseus_limma}
+\caption{\label{fig:perseus_limma}Perseus vs limma for a selection of 3 vs 3 replicates. A. P-value (not adjusted) comparison. B. Number of significant proteins. C. Volcano plot using fold-change and p-values from Perseus. All data are in yellow background. The limma-significant-only proteins are as blue circles, the perseus-significant-only proteins are as green triangles. Proteins significant in both tools are as pink diamonds. The ellipses indicate data discussed in the text. D. Volcano plot using fold-change and p-values from Proteus. Symbols are the same as in C.}\label{fig:fig_perseus_limma}
 \end{figure}
 
 Figure \ref{fig:perseus_limma} shows the comparison of p-values,
 significantly differentially expressed proteins and volcano plots for
 both approaches. There were 39 proteins called as significant by both
 methods, 15 only by \emph{Perseus} and 45 only by \emph{limma} (in
-\emph{Proteus}). We can see in Figure \ref{fig:perseus_limma}C a small
-group of proteins called by \emph{limma} only where \emph{Perseus}
-reported large p-values (6 blue circles at the bottom of the plot).
-These proteins have missing data and rather large intensity. Imputation
-in \emph{Perseus} filled the missing values with low intensities,
-inflating variance and missing what otherwise would be differentially
-expressed. An example of such a protein is shown in Figure
-\ref{fig:protein_examples}A. Another group of \emph{limma}-only blue
-circles in Figure \ref{fig:perseus_limma}C indicates that the
-permutation FDR method used in \emph{Perseus} is slightly more
-conservative that that in \emph{limma}. All these proteins have adjusted
-p-values near the limit 0.05. An example of such protein is shown in
-Figure \ref{fig:protein_examples}B. The proteins plotted as green
-triangles (see Figure \ref{fig:perseus_limma} C and D) are marked as
+\emph{Proteus}), see Fig. \ref{fig:perseus_limma}B. We can see in Figure
+\ref{fig:perseus_limma}C a small group of proteins called by
+\emph{limma} only where \emph{Perseus} reported large p-values (6 blue
+circles at the bottom of the plot marked as ``1''). These proteins have
+missing data and rather large intensity. Imputation in \emph{Perseus}
+filled the missing values with low intensities, inflating variance and
+missing what otherwise would be differentially expressed. An example of
+such a protein is shown in Figure \ref{fig:protein_examples}A. The other
+group of \emph{limma}-only blue circles in Figure
+\ref{fig:perseus_limma}C (marked as 2) indicates that the permutation
+FDR method used in \emph{Perseus} is slightly more conservative that
+that in \emph{limma}. All these proteins have adjusted p-values near the
+limit 0.05. An example of such protein is shown in Figure
+\ref{fig:protein_examples}B. The proteins plotted as green triangles
+(see Figure \ref{fig:perseus_limma} C and D) are marked as
 differentially expressed by \emph{Perseus} but not \emph{limma}. They
 typically have small variance and small fold change. They are called
 significant by a simple t-test but not by \emph{limma}, which moderates
 variance and avoids cases of unusually small variability. An example of
 such protein is shown in Figure \ref{fig:protein_examples}C. We note
-that these data can be easily eliminated from \emph{Perseus} by setting
-a fold-change limit in a \(t\)-test.
+that data with small fold changes can be easily removed from
+\emph{Perseus} by setting a fold-change limit in a \(t\)-test.
 
 \begin{figure}[H]
 
@@ -370,38 +371,16 @@ using simulated data. We generated a simulated set based on real data.
 Since we have a good data set of two conditions in 35 replicates each
 (Gierlinski at al. in preparation), we used it to find the mean-variance
 relationship and the rate of missing values as a function of the
-intensity.
-
-Figure \ref{fig:full_data_stats}A shows the relation between the
-logarithm of the variance and logarithm of the mean calculated across
-all 35 replicates (data from both conditions aggregated). It is well
-approximated by a straight line. Figure \ref{fig:full_data_stats}B shows
-the distribution of the number of ``good'' replicates as a function of
-the logarithm of the mean intensity. The good replicates are those with
-signal detection, as opposed to missing data. We see that in our data
-set all measurements with \(\log_2\) mean below \textasciitilde{}19
-contain only one good replicate (out of 35!).
-
-\begin{figure}[H]
-
-{\centering \includegraphics{proteus_files/figure-latex/lfq_stats_plots-1} 
-
-}
-
-\caption{\label{fig:full_data_stats}Properties of the full data set with 35 replicates in two conditions. A. Logarithm of the variance versus logarithm of the mean is very well approximated by a linear function. B. Number of good replicates as a function of the loarithm of the mean intensity (that is not missing data). Data from both conditions were aggregated.}\label{fig:lfq_stats_plots}
-\end{figure}
-
-We used this information to create a simulated data set. We generated
-data in two conditions in three replicates each and allowed for missing
-data in each condition. We chose 7 values of \(\log_2 M\) (mean) between
-17 and 29 and 15 values of \(\log_2 FC\) (fold change) between 0 and
-2.8. For each combination of \(\log_2 M\) and \(\log_2 FC\) we generated
-two random samples of up to 3 data points from the log-normal
-distribution with the given mean and variance estimated from the linear
-function found from real data. The first sample had the mean \(M\), the
-second sample had the mean \(M * FC\). For each sample the number of
-good replicates was generated based on data in Figure
-\ref{fig:full_data_stats}B. First, for the given \(M\), we used the
+intensity. We used this information to create a simulated data set in
+two conditions in three replicates each and allowed for missing data in
+each condition. We chose a grid of \(\log_2 M\) (mean) and \(\log_2 FC\)
+(fold change) covering most of the original data. For each combination
+of \(\log_2 M\) and \(\log_2 FC\) we generated two random samples of up
+to 3 data points from the log-normal distribution with the given mean
+and variance estimated from the linear function found from real data.
+The first sample had the mean \(M\), the second sample had the mean
+\(M * FC\). For each sample the number of good replicates was generated
+to mimick the real data. First, for the given \(M\), we used the
 cumulative distribution of the number of good replicates to generate a
 number between 1 and 35. This was then sub-sampled to the 3 replicates
 generated (for example, if 10 was generated in the first step, we
@@ -422,7 +401,7 @@ wide range of intensities and fold changes.
 
 }
 
-\caption{\label{fig:simulation_rates}Results for the full set of simulated data with 3 replicates. Top panels show limma, bottom panles show Perseus results. A and C show the proportion of tests called as signficant as a function of the simulated fold change (FC) and mean (M). B and D show the false discovery rate, that is the proportion of tests for simulated log FC = 0 called as significant.}\label{fig:plot_sim_limma}
+\caption{\label{fig:simulation_rates}Results for the full set of simulated data with 3 replicates. Top panels show limma, bottom panels show Perseus results. A and C show the proportion of tests called as signficant as a function of the simulated fold change (FC) and mean (M). B and D show the false discovery rate, that is the proportion of tests for simulated log FC = 0 called as significant.}\label{fig:plot_sim_limma}
 \end{figure}
 
 We performed differential expression on the simulated data using
@@ -452,9 +431,9 @@ works for any sample size. As we can see from the bottom curve in Figure
 \ref{fig:simulation_rates}A (corresponding to \(\log_2 M = 17\))
 \emph{limma} performs well even in tests of one versus one replicate.
 
-The price to pay for increased sensitivity of \emph{limma} is the
-increased false discovery rate (FDR). We can estimate FDR as a
-proportion of proteins called significant at \(\log_2 FC = 0\). Figure
+The increased sensitivity of \emph{limma} results in the increased false
+discovery rate (FDR). We can estimate FDR as a proportion of proteins
+called significant at \(\log_2 FC = 0\). Figure
 \ref{fig:simulation_rates}B shows that FDR for \emph{limma} exceeds the
 assumed limit of 0.05 at the three lowest intensities. \emph{Perseus}
 discovers far fewer positives at these intensities, which results in
