@@ -97,22 +97,24 @@
 \emph{Proteus} is a package for downstream analysis of \emph{MaxQuant}
 evidence data in the R environment. It provides a variety of tools for
 peptide and protein aggregation, quality checks, data exploration and
-visualisation, including interactive analysis in \emph{Shiny} framework.
-\emph{Proteus} performs differential expression with a well-established
-tool \emph{limma}, offering a robust treatment of missing data,
-frequently encountered in label-free mass-spectrometry experiments. This
-results in better sensitivity than random imputation combined with a
-t-test, implemented in a popular package \emph{Perseus}, as we
-demonstrate on real and simulated data. Embedding \emph{Proteus} in R
-offers access to a wide selection of statistical and graphical tools for
-further analysis. Availability and implementation: The open-source R
-package, including example data set and tutorias, is available to
-install from GitHub (\url{https://github.com/bartongroup/proteus}).
+visualisation. Interactive analysis is implemented in the \emph{Shiny}
+framework, where individual peptides or protein can be examined in the
+context of the volcano plot. \emph{Proteus} performs differential
+expression with a well-established tool \emph{limma}, offering a robust
+treatment of missing data, frequently encountered in label-free
+mass-spectrometry experiments. This results in better sensitivity than
+random imputation combined with a \emph{t}-test, implemented in a
+popular package \emph{Perseus}, as we demonstrate on real and simulated
+data. Embedding \emph{Proteus} in R offers access to a wide selection of
+statistical and graphical tools for further analysis. Availability and
+implementation: The open-source R package, including example data set
+and tutorials, is available to install from GitHub
+(\url{https://github.com/bartongroup/proteus}).
 \end{abstract}
 
 \section{Introduction}\label{introduction}
 
-\emph{MaxQuant} is one of the most popular tools for analyzing mass
+\emph{MaxQuant} is one of the most popular tools for analysing mass
 spectrometry (MS) quantitative proteomics data \citep{coxmann2008}. The
 output of a \emph{MaxQuant} run usually consists of several tables,
 including the evidence data and summarized peptide and protein
@@ -135,7 +137,7 @@ comparison of numerical results from two or more biological conditions.
 For high-throughput experiments differential expression must take into
 account a statistical model of data distribution, wide range of
 variance, missing data and multiple test corrections. A number of tools
-have been developed to cope with these challanges, in particular in the
+have been developed to cope with these challenges, in particular in the
 field of RNA-seq \citep{gierlinski2015, schurch2016}. One of these tools
 is a well-established Bioconductor package \emph{limma}
 \citep{ritchie2015}, originally developed for microarrays
@@ -155,7 +157,7 @@ random imputation.
 conserve memory only essential columns are retained. Reverse sequences
 and contaminants are rejected by default. In the current version,
 label-free, tandem mass tags (TMT) \citep{thompson2003} and stable
-isotope labeling by amino acids in cell culture (SILAC) \citep{ong2002}
+isotope labelling by amino acids in cell culture (SILAC) \citep{ong2002}
 data are supported.
 
 Peptide measurements (intensities or SILAC ratios) are aggregated from
@@ -380,7 +382,7 @@ to 3 data points from the log-normal distribution with the given mean
 and variance estimated from the linear function found from real data.
 The first sample had the mean \(M\), the second sample had the mean
 \(M * FC\). For each sample the number of good replicates was generated
-to mimick the real data. First, for the given \(M\), we used the
+to mimic the real data. First, for the given \(M\), we used the
 cumulative distribution of the number of good replicates to generate a
 number between 1 and 35. This was then sub-sampled to the 3 replicates
 generated (for example, if 10 was generated in the first step, we
@@ -477,7 +479,7 @@ discovery rate is now better controlled by \emph{limma} than by
 
 R is becoming one of the most widely used tools for data science and
 statistical computing, in particular in academia
-\citep{tippmann2014, muenchen2017}. Its strenght is built on the wealth
+\citep{tippmann2014, muenchen2017}. Its strength is built on the wealth
 of statistical libraries available. \emph{Proteus} adds to a rapidly
 growing suite of bioinformatics packages in R. It not only performs
 specific tasks related to processing of \emph{MaxQuant} output, but
@@ -499,7 +501,7 @@ expression analysis, allowing for stable analysis of data with missing
 values, common in label-free MS proteomics, with no need for random
 imputation. Instead, \emph{limma} borrows information between
 peptides/proteins to build a robust model of variance and performs
-differential expression tests based on this model. We demostrate that
+differential expression tests based on this model. We demonstrate that
 this offers a clear advantage in terms of sensitivity over a \(t\)-test
 combined with random imputation. This makes \emph{Proteus} particularly
 useful for label-free data with a small number of replicates.
