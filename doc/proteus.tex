@@ -24,7 +24,7 @@
 \usepackage[margin=1in]{geometry}
 \usepackage{hyperref}
 \hypersetup{unicode=true,
-            pdftitle={Proteus: an R package for analysis of MaxQuant output},
+            pdftitle={Proteus: an R package for downstream analysis of MaxQuant output},
             pdfauthor={Marek Gierlinski; Francesco Gastaldello; Geoffrey J. Barton},
             pdfborder={0 0 0},
             breaklinks=true}
@@ -76,7 +76,8 @@
 
 \setlength{\droptitle}{-2em}
 
-  \title{\emph{Proteus}: an R package for analysis of \emph{MaxQuant} output}
+  \title{\emph{Proteus}: an R package for downstream analysis of \emph{MaxQuant}
+output}
     \pretitle{\vspace{\droptitle}\centering\huge}
   \posttitle{\par}
     \author{Marek Gierlinski\footnote{Data Analysis Group, Division of Computational
@@ -107,8 +108,8 @@ that \emph{limma} results in improved sensitivity over random imputation
 combined with a \emph{t}-test as implemented in the popular package
 \emph{Perseus}. Embedding \emph{Proteus} in R provides access to a wide
 selection of statistical and graphical tools for further analysis and
-analysis reproducibility by scripting. Availability and implementation:
-The open-source R package, including example data and tutorials, is
+reproducibility by scripting. Availability and implementation: The
+open-source R package, including example data and tutorials, is
 available to install from GitHub
 (\url{https://github.com/bartongroup/proteus}).
 \end{abstract}
@@ -220,7 +221,7 @@ interactive volcano or fold-change-intensity plot (Fig.
 
 \begin{figure}[H]
 
-{\centering \includegraphics{../volcano_live_screenshot} 
+{\centering \includegraphics{volcano_live_screenshot} 
 
 }
 
@@ -287,10 +288,10 @@ the same protein data set. We used a subset of a large data set from
 Gierlinski et al. (in preparation). We read the evidence file and
 filtered out reverse sequences and contaminants. Then, we created a
 peptide table based on three randomly selected replicates in each
-condition (samples Mut-7, Mut-28, Mut-34, WT-8, WT-13, WT-25). Peptides
-were aggregated by summing multiple evidence entries for a given
-(unmodified) sequence. Next, we aggregated peptides into proteins using
-the high-flyer method and peptide-to-protein mapping based on the
+condition (samples 1083-7, 1083-28, 1083-34, WT-8, WT-13, WT-25).
+Peptides were aggregated by summing multiple evidence entries for a
+given (unmodified) sequence. Next, we aggregated peptides into proteins
+using the high-flyer method and peptide-to-protein mapping based on the
 `leading razor protein' column from evidence data. We filtered protein
 intensities in these replicates, so at least one data point was present
 in each condition. These data were normalized to median (that is, after
@@ -512,6 +513,11 @@ useful for label-free data with a small number of replicates.
 The authors would like to thank Katharina Trunk, Sarah Coulthurst and
 Julien Peltier for kindly providing example data used in the
 \emph{Proteus} package and discussed in this paper.
+
+\section{Funding}\label{funding}
+
+The School of Life Sciences Data Analysis Group is funded by the
+Wellcome Trust grant 097945/Z/11/Z.
 
 \renewcommand\refname{References}
 \bibliography{proteus.bib}

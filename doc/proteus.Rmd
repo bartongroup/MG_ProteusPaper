@@ -1,5 +1,5 @@
 ---
-title: "*Proteus*: an R package for analysis of *MaxQuant* output"
+title: "*Proteus*: an R package for downstream analysis of *MaxQuant* output"
 author:
 - Marek Gierlinski^[Data Analysis Group, Division of Computational Biology, School of Life Sciences, University of Dundee, Dundee, UK]
 - Francesco Gastaldello^[Biological Chemistry and Drug Discovery, University of Dundee, Dundee, UK]
@@ -98,7 +98,7 @@ Package *limma* was chosen for differential expression due to its stability agai
 
 
 ```{r fig_shiny, fig.width=5, fig.height=4, fig.cap="\\label{fig:shiny}A screenshot of the interactive data explorer in Proteus, which is implemented in the Shiny framework. It shows an interactive volcano plot with a selected protein marked in red. The user can select proteins from the plot by hovering the mouse over a dot representing one protein. To the right, there are protein annotation, intensity plot, detailed intensity table and a p-value from the differential expression test. At the bottom there is a row selected from the full table of proteins by typing the protein ID in the search box."}
-knitr::include_graphics("../volcano_live_screenshot.png")
+knitr::include_graphics("volcano_live_screenshot.png")
 ```
 
 ## Minimal example
@@ -747,5 +747,8 @@ R is a scripting language and when data and code are published together, it make
 
 The authors would like to thank Katharina Trunk, Sarah Coulthurst and Julien Peltier for kindly providing example data used in the *Proteus* package and discussed in this paper.
 
+# Funding
+
+The School of Life Sciences Data Analysis Group is funded by the Wellcome Trust grant 097945/Z/11/Z.
 
 # References
