@@ -744,9 +744,9 @@ R is a scripting language and when data and code are published together, it make
 
 *Proteus* uses a powerful package *limma* for differential expression analysis, allowing for stable analysis of data with missing values, common in label-free MS proteomics, with no need for random imputation. Instead, *limma* borrows information between peptides/proteins to build a robust model of variance and performs differential expression tests based on this model. We demonstrate that this offers a clear advantage in terms of sensitivity over a $t$-test combined with random imputation. This makes *Proteus* particularly useful for label-free data with a small number of replicates.
 
-# Acknolwdgments
+# Acknowledgements
 
-The authors would like to thank Katharina Trunk, Sarah Coulthurst and Julien Peltier for kindly providing example data used in the *Proteus* package and discussed in this paper.
+The authors would like to thank Katharina Trunk, Sarah Coulthurst and Julien Peltier for kindly providing example data used in the *Proteus* package and discussed in this paper. MG thanks Matthias Trost for discussions and James Abbott for support.
 
 # Funding
 
