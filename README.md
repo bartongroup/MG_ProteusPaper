@@ -4,7 +4,7 @@ This repository contains the Rmd document and all data needed to create the PDF 
 
 ## Running the code and creating the PDF file
 
-To run the code one needs
+The following command in R (we recommend using RStudio) will create the PDF document and figures.
 
 ```
 rmarkdown::render("doc/proteus.Rmd")
