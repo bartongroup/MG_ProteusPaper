@@ -10,7 +10,7 @@ The following command in R (we recommend using RStudio) will create the PDF docu
 rmarkdown::render("doc/proteus.Rmd")
 ```
 
-The following R libraries are required to build the document: knitr, ggplot2, ggdendro, viridis, cowplot and dplyr. Also, the package descibed in this document, *Proteus* is needed. *Proteus* can be installed from [GitHub](https://github.com/bartongroup/Proteus).
+The following R libraries are required to build the document: *knitr*, *ggplot2*, *ggdendro*, *viridis*, *cowplot* and *dplyr*. Also, the package descibed in this document, *Proteus* is needed. *Proteus* can be installed from [GitHub](https://github.com/bartongroup/Proteus).
 
 ## Description of data files
 
